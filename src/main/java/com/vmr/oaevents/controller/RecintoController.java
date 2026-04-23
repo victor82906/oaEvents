@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,6 +40,9 @@ public class RecintoController {
 
     @PostMapping
     public ResponseEntity<RecintoOutputDto> create(@Valid @RequestBody RecintoInputDto inputDto) {
+        if (Objects.isNull(inputDto.getContrasena())){
+            throw new IllegalArgumentException("Debe indicar su contraseña");
+        }
         Recinto entity = mapper.toEntity(inputDto);
         entity = service.save(entity);
         return new ResponseEntity<>(mapper.toDto(entity), HttpStatus.CREATED);

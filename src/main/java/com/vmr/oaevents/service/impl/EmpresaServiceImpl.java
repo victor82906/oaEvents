@@ -5,6 +5,7 @@ import com.vmr.oaevents.repository.EmpresaRepository;
 import com.vmr.oaevents.service.EmpresaService;
 import com.vmr.oaevents.service.RolService;
 import com.vmr.oaevents.service.UsuarioService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,9 +36,9 @@ public class EmpresaServiceImpl implements EmpresaService {
     @Override
     public Empresa save(Empresa entity) {
         if (usuarioService.existByEmail(entity.getEmail())){
-            throw new EntityNotFoundException("Email: " + entity.getEmail() + ", ya existente en la base de datos");
+            throw new EntityExistsException("Email: " + entity.getEmail() + ", ya existente en la base de datos");
         } else if(this.existByCif(entity.getCif())){
-            throw new EntityNotFoundException("Cif: " + entity.getCif() + ", ya existente en la base de datos");
+            throw new EntityExistsException("Cif: " + entity.getCif() + ", ya existente en la base de datos");
         }
         entity.setRol(rolService.findByNombre("EMPRESA"));
         entity.setContrasena(passwordEncoder.encode(entity.getContrasena()));

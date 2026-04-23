@@ -5,6 +5,7 @@ import com.vmr.oaevents.repository.RecintoRepository;
 import com.vmr.oaevents.service.RecintoService;
 import com.vmr.oaevents.service.RolService;
 import com.vmr.oaevents.service.UsuarioService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +36,7 @@ public class RecintoServiceImpl implements RecintoService {
     @Override
     public Recinto save(Recinto entity) {
         if (usuarioService.existByEmail(entity.getEmail())){
-            throw new EntityNotFoundException("Email: " + entity.getEmail() + ", ya existente en la base de datos");
+            throw new EntityExistsException("Email: " + entity.getEmail() + ", ya existente en la base de datos");
         }
         entity.setRol(rolService.findByNombre("RECINTO"));
         entity.setContrasena(passwordEncoder.encode(entity.getContrasena()));
