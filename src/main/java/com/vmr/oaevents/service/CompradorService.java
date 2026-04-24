@@ -9,6 +9,7 @@ import java.util.List;
 public interface CompradorService {
     List<Comprador> findAll();
     Page<Comprador> findAll(Pageable pageable);
+    Page<Comprador> buscar(String termino, Pageable pageable);
     Comprador findById(Long id);
     Comprador save(Comprador entity);
     Comprador update(Long id, Comprador entity);

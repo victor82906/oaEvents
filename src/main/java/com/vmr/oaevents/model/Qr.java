@@ -16,6 +16,7 @@ public class Qr {
     private Long id;
     private String codigo;
     private String foto;
+    private boolean usado;
 
     @OneToOne(mappedBy = "qr")
     private Entrada entrada;

@@ -12,6 +12,7 @@ public class EntradaOutputDto {
 
     private Long id;
     private LocalDateTime fechaCompra;
+    private LocalDateTime fechaEvento;
     private String nombreComprador;
     private String dniComprador;
     private double precio;

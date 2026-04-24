@@ -10,6 +10,7 @@ public interface EmpresaService {
     List<Empresa> findAll();
     Page<Empresa> findAll(Pageable pageable);
     Page<Empresa> findAllByActiva(boolean activa, Pageable pageable);
+    Page<Empresa> buscar(String termino, Pageable pageable);
     Empresa findById(Long id);
     Empresa save(Empresa entity);
     Empresa update(Long id, Empresa entity);

@@ -1,6 +1,7 @@
 package com.vmr.oaevents.controller;
 
 import com.vmr.oaevents.model.Qr;
+import com.vmr.oaevents.model.dto.qr.CheckQrDto;
 import com.vmr.oaevents.model.dto.qr.QrInputDto;
 import com.vmr.oaevents.model.dto.qr.QrOutputDto;
 import com.vmr.oaevents.model.mapper.QrMapper;
@@ -42,6 +43,12 @@ public class QrController {
         Qr entity = mapper.toEntity(inputDto);
         entity = service.save(entity);
         return new ResponseEntity<>(mapper.toDto(entity), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<String> checkQr(@Valid @RequestBody CheckQrDto checkQrDto) {
+        service.checkQr(checkQrDto);
+        return ResponseEntity.ok("El QR es válido y ha sido registrado con éxito.");
     }
 
     @PutMapping("/{id}")

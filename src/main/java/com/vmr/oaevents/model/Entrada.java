@@ -17,6 +17,7 @@ public class Entrada {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime fechaCompra;
+    private LocalDateTime fechaEvento;
     private String nombreComprador;
     private String dniComprador;
     private double precio;

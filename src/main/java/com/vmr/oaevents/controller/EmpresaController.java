@@ -52,6 +52,14 @@ public class EmpresaController {
         return ResponseEntity.ok(page.map(mapper::toDto));
     }
 
+    @GetMapping("/buscar/page")
+    public ResponseEntity<Page<EmpresaOutputDto>> buscar(
+            @RequestParam String termino, 
+            Pageable pageable) {
+        Page<Empresa> page = service.buscar(termino, pageable);
+        return ResponseEntity.ok(page.map(mapper::toDto));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<EmpresaOutputDto> findById(@PathVariable Long id) {
         Empresa entity = service.findById(id);

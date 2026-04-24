@@ -14,4 +14,5 @@ public interface EntradaService {
     Entrada save(Entrada entity);
     Entrada update(Long id, Entrada entity);
     void deleteById(Long id);
+    byte[] descargarEntradaPdf(Long id);
 }

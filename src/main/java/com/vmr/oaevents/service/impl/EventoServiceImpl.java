@@ -15,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -51,6 +54,23 @@ public class EventoServiceImpl implements EventoService {
     public Page<Evento> findByEmpresaIdAndAceptado(Long empresaId, boolean aceptado, Pageable pageable) {
         empresaService.findById(empresaId);
         return repository.findByEmpresaIdAndAceptado(empresaId, aceptado, pageable);
+    }
+
+    @Override
+    public Page<Evento> findByTitulo(String titulo, Pageable pageable) {
+        return repository.findByTituloContainingIgnoreCase(titulo, pageable);
+    }
+
+    @Override
+    public Page<Evento> findByRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable) {
+        if (fechaInicio.isAfter(fechaFin)) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha fin");
+        }
+
+        LocalDateTime start = fechaInicio.atStartOfDay();
+        LocalDateTime end = fechaFin.atTime(LocalTime.MAX);
+        
+        return repository.findByFechaBetween(start, end, pageable);
     }
 
     @Override

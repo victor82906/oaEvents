@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +51,17 @@ public class EntradaController {
     public ResponseEntity<EntradaOutputDto> findById(@PathVariable Long id) {
         Entrada entity = service.findById(id);
         return ResponseEntity.ok(mapper.toDto(entity));
+    }
+
+    @GetMapping("/{id}/descargar")
+    public ResponseEntity<byte[]> descargarEntrada(@PathVariable Long id) {
+        byte[] pdfBytes = service.descargarEntradaPdf(id);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "entrada_" + id + ".pdf");
+        
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
     @PostMapping

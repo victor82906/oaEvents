@@ -9,10 +9,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +68,23 @@ public class EventoController {
     @GetMapping("/empresa/{empresaId}/pendientes/page")
     public ResponseEntity<Page<EventoOutputDto>> findPendientesByEmpresaId(@PathVariable Long empresaId, Pageable pageable) {
         Page<Evento> page = service.findByEmpresaIdAndAceptado(empresaId, false, pageable);
+        return ResponseEntity.ok(page.map(mapper::toDto));
+    }
+
+    @GetMapping("/buscar/titulo/page")
+    public ResponseEntity<Page<EventoOutputDto>> findByTitulo(
+            @RequestParam String titulo, 
+            Pageable pageable) {
+        Page<Evento> page = service.findByTitulo(titulo, pageable);
+        return ResponseEntity.ok(page.map(mapper::toDto));
+    }
+
+    @GetMapping("/buscar/fechas/page")
+    public ResponseEntity<Page<EventoOutputDto>> findByFechas(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio, 
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            Pageable pageable) {
+        Page<Evento> page = service.findByRangoFechas(fechaInicio, fechaFin, pageable);
         return ResponseEntity.ok(page.map(mapper::toDto));
     }
 

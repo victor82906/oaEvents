@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrada Oficial - Olivo Arena</title>
+    <style>
+        /* Tipografía compatible con OpenHTMLToPDF */
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #ffffff;
+            color: #1a1a1a;
+        }
+
+        /* Contenedor principal de la entrada */
+        .ticket-box {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            border: 2px solid #000000;
+            border-radius: 4px;
+        }
+
+        /* Cabecera Negra (Título del Evento) */
+        .header {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 25px 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Tabla principal que divide Información (Izquierda) y QR (Derecha) */
+        .layout-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .layout-table td {
+            vertical-align: top;
+            padding: 30px;
+        }
+
+        /* Columna Izquierda: Datos */
+        .info-col {
+            width: 65%;
+            border-right: 2px dashed #000000; /* Efecto de corte de entrada */
+        }
+
+        /* Columna Derecha: QR */
+        .qr-col {
+            width: 35%;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        /* Estilos de las etiquetas de datos */
+        .data-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-size: 11px;
+            color: #666666;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            display: block;
+        }
+
+        .value-highlight {
+            font-size: 26px;
+            color: #000000;
+        }
+
+        /* Tabla interna para alinear campos en la misma fila (Fila/Asiento) */
+        .grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .grid-table td {
+            padding: 0;
+            width: 50%;
+        }
+
+        /* Imagen del QR */
+        .qr-image {
+            width: 190px;
+            height: 190px;
+            margin-bottom: 15px;
+        }
+
+        .qr-text {
+            font-size: 10px;
+            color: #666666;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        /* Pie de página */
+        .footer {
+            border-top: 2px solid #000000;
+            padding: 15px 30px;
+            background-color: #f2f2f2;
+            font-size: 11px;
+            color: #333333;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+
+<div class="ticket-box">
+
+    <div class="header">
+        <h1 th:text="${nombreEvento}">NOMBRE DEL EVENTO</h1>
+        <p th:text="${fechaEvento}">01/01/2026 21:00</p>
+    </div>
+
+    <table class="layout-table">
+        <tr>
+            <td class="info-col">
+
+                <div class="data-group">
+                    <span class="label">Titular de la Entrada</span>
+                    <span class="value" th:text="${nombreComprador} + ' - DNI: ' + ${dniComprador}">Juan Pérez - 12345678Z</span>
+                </div>
+
+                <table class="grid-table">
+                    <tr>
+                        <td>
+                            <span class="label">Acceso</span>
+                            <span class="value value-highlight" th:text="'Puerta ' + ${puerta}">Puerta A</span>
+                        </td>
+                        <td>
+                            <span class="label">Importe</span>
+                            <span class="value value-highlight" th:text="${precio} + ' €'">35.00 €</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <div th:if="${pista}" class="data-group" style="margin-top: 15px; padding: 15px; background-color: #eeeeee; border-radius: 4px;">
+                    <span class="label">Ubicación</span>
+                    <span class="value" style="font-size: 20px;">PISTA (Admisión General)</span>
+                </div>
+
+                <div th:if="${!pista}">
+                    <table class="grid-table" style="margin-top: 15px; padding: 15px; background-color: #eeeeee; border-radius: 4px;">
+                        <tr>
+                            <td style="padding-left: 15px;">
+                                <span class="label">Fila</span>
+                                <span class="value" style="font-size: 20px;" th:text="${fila}">12</span>
+                            </td>
+                            <td>
+                                <span class="label">Asiento</span>
+                                <span class="value" style="font-size: 20px;" th:text="${numero}">45</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </td>
+
+            <td class="qr-col">
+                <span class="label" style="margin-bottom: 15px;">Control de Acceso</span>
+
+                <img class="qr-image" th:src="${fotoQr}" alt="QR de Acceso"/>
+
+                <span class="label">Identificador Único</span>
+                <span class="qr-text" th:text="${codigoQr}">a1b2c3d4-e5f6</span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <strong>Palacio de Deportes Olivo Arena.</strong> Entrada válida para una única persona. Conservar hasta la finalización del evento. La organización se reserva el derecho de admisión. Fecha de emisión: <span th:text="${fechaCompra}">01/01/2026</span>.
+    </div>
+
+</div>
+
+</body>
+</html>

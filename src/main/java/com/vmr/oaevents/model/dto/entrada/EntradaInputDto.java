@@ -12,6 +12,8 @@ public class EntradaInputDto {
 
     private LocalDateTime fechaCompra;
 
+    private LocalDateTime fechaEvento;
+
     private String nombreComprador;
 
     private String dniComprador;

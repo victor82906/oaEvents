@@ -40,6 +40,14 @@ public class CompradorController {
         return ResponseEntity.ok(page.map(mapper::toDto));
     }
 
+    @GetMapping("/buscar/page")
+    public ResponseEntity<Page<CompradorOutputDto>> buscar(
+            @RequestParam String termino, 
+            Pageable pageable) {
+        Page<Comprador> page = service.buscar(termino, pageable);
+        return ResponseEntity.ok(page.map(mapper::toDto));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CompradorOutputDto> findById(@PathVariable Long id) {
         Comprador entity = service.findById(id);

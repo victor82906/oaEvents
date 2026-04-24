@@ -36,6 +36,11 @@ public class CompradorServiceImpl implements CompradorService {
     }
 
     @Override
+    public Page<Comprador> buscar(String termino, Pageable pageable) {
+        return repository.searchByNombreOrEmailOrDni(termino, pageable);
+    }
+
+    @Override
     public Comprador findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comprador no encontrado con id: " + id));
