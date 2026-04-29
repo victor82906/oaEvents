@@ -4,17 +4,18 @@ import com.vmr.oaevents.model.Chat;
 import com.vmr.oaevents.model.dto.chat.ChatInputDto;
 import com.vmr.oaevents.model.dto.chat.ChatOutputDto;
 import com.vmr.oaevents.model.mapper.ChatMapper;
+import com.vmr.oaevents.security.AuthenticationFacade;
 import com.vmr.oaevents.service.ChatService;
 import com.vmr.oaevents.service.kafka.ChatKafkaProducer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class ChatController {
     private final ChatService service;
     private final ChatMapper mapper;
     private final ChatKafkaProducer kafkaProducer;
+    private final AuthenticationFacade authenticationFacade;
 
     @GetMapping
     @PreAuthorize("hasRole('RECINTO')")
@@ -57,8 +59,10 @@ public class ChatController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> create(@Valid @RequestBody ChatInputDto inputDto) {
-        Chat entity = mapper.toEntity(inputDto);
-        kafkaProducer.enviarMensajeAKafka(entity);
+        inputDto.setFecha(LocalDateTime.now());
+        inputDto.setEmisor_id(authenticationFacade.getAuthenticatedUsuario().getId());
+
+        kafkaProducer.enviarMensajeAKafka(inputDto);
         return ResponseEntity.accepted().build();
     }
 

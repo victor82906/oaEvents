@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface ChatMapper {
 
     @Mapping(source = "receptor_id", target = "receptor.id")
-    @Mapping(target = "emisor_id", ignore = true)
+    @Mapping(target = "emisor", ignore = true)
     @Mapping(target = "fecha", ignore = true)
     Chat toEntity(ChatInputDto chatInputDto);
 
