@@ -14,7 +14,7 @@ public class RecintoInputDto {
     @Email(message = "Email no valido")
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    //@NotBlank(message = "La contraseña es obligatoria")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$", message = "La contraseña debe tener al menos 8 caracteres, una letra y un numero")
     private String contrasena;
 
