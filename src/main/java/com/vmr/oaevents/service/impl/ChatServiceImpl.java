@@ -3,6 +3,7 @@ package com.vmr.oaevents.service.impl;
 import com.vmr.oaevents.model.Chat;
 import com.vmr.oaevents.model.Usuario;
 import com.vmr.oaevents.repository.ChatRepository;
+import com.vmr.oaevents.security.AuthenticationFacade;
 import com.vmr.oaevents.service.ChatService;
 import com.vmr.oaevents.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,7 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository repository;
     private final UsuarioService usuarioService;
+    private final AuthenticationFacade authenticationFacade;
 
     @Override
     public List<Chat> findAll() {
@@ -40,10 +43,10 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Chat save(Chat entity) {
-        Usuario emisor = usuarioService.findById(entity.getEmisor().getId());
         Usuario receptor = usuarioService.findById(entity.getReceptor().getId());
-        entity.setEmisor(emisor);
         entity.setReceptor(receptor);
+        entity.setEmisor(authenticationFacade.getAuthenticatedUsuario());
+        entity.setFecha(LocalDateTime.now());
         return repository.save(entity);
     }
 
@@ -53,6 +56,7 @@ public class ChatServiceImpl implements ChatService {
         entity.setId(id);
         entity.setEmisor(chat.getEmisor());
         entity.setReceptor(chat.getReceptor());
+        entity.setFecha(chat.getFecha());
         return repository.save(entity);
     }
 

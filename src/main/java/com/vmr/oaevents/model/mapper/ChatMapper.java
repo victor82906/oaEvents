@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ChatMapper {
 
-    @Mapping(source = "emisor_id", target = "emisor.id")
     @Mapping(source = "receptor_id", target = "receptor.id")
+    @Mapping(target = "emisor_id", ignore = true)
     @Mapping(target = "fecha", ignore = true)
     Chat toEntity(ChatInputDto chatInputDto);
 

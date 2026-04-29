@@ -5,6 +5,7 @@ import com.vmr.oaevents.model.dto.chat.ChatInputDto;
 import com.vmr.oaevents.model.dto.chat.ChatOutputDto;
 import com.vmr.oaevents.model.mapper.ChatMapper;
 import com.vmr.oaevents.service.ChatService;
+import com.vmr.oaevents.service.kafka.ChatKafkaProducer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public class ChatController {
 
     private final ChatService service;
     private final ChatMapper mapper;
+    private final ChatKafkaProducer kafkaProducer;
 
     @GetMapping
     @PreAuthorize("hasRole('RECINTO')")
@@ -54,10 +56,10 @@ public class ChatController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ChatOutputDto> create(@Valid @RequestBody ChatInputDto inputDto) {
+    public ResponseEntity<Void> create(@Valid @RequestBody ChatInputDto inputDto) {
         Chat entity = mapper.toEntity(inputDto);
-        entity = service.save(entity);
-        return new ResponseEntity<>(mapper.toDto(entity), HttpStatus.CREATED);
+        kafkaProducer.enviarMensajeAKafka(entity);
+        return ResponseEntity.accepted().build();
     }
 
     @PutMapping("/{id}")

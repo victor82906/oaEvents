@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo - Olivo Arena (Demo)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        /* Contenedor del mapa */
+        .mapa-contenedor {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* El SVG base */
+        svg {
+            width: 100%;
+            height: auto;
+            border: 1px dashed #ccc;
+            background-color: #fafafa;
+            /* Transición suave para el efecto de zoom */
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Estilos de las zonas */
+        .zona-path {
+            fill: #e2e8f0;
+            stroke: #64748b;
+            stroke-width: 4;
+            cursor: pointer;
+            transition: fill 0.2s;
+        }
+        .zona-path:hover {
+            fill: #bae6fd; /* Azul clarito al pasar el ratón */
+        }
+
+        /* Estilos de los asientos */
+        .asiento {
+            cursor: pointer;
+            stroke: white;
+            stroke-width: 2;
+        }
+        .asiento:hover {
+            stroke: black;
+        }
+        .asiento.libre { fill: #22c55e; } /* Verde */
+        .asiento.ocupado { fill: #ef4444; pointer-events: none; } /* Rojo */
+
+        /* Botón para volver al mapa general */
+        #btn-volver {
+            display: none;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #btn-volver:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mapa-contenedor">
+    <h2>Selecciona tu zona</h2>
+    <button id="btn-volver" onclick="volverAlMapaGeneral()">← Volver al mapa general</button>
+
+    <svg id="mapa-svg" viewBox="0 0 1000 1000">
+
+        <g id="capa-zonas">
+            <path class="zona-path"
+                  d="M 200 100 L 800 100 L 700 300 L 300 300 Z"
+                  onclick="entrarEnZona('150 50 700 300', 'asientos-norte')">
+            </path>
+            <text x="500" y="200" text-anchor="middle" font-size="30" fill="#333" pointer-events="none">Grada Norte</text>
+
+            <path class="zona-path"
+                  d="M 300 400 L 700 400 L 700 700 L 300 700 Z"
+                  onclick="entrarEnZona('250 350 500 400', 'asientos-pista')">
+            </path>
+            <text x="500" y="560" text-anchor="middle" font-size="30" fill="#333" pointer-events="none">Pista</text>
+        </g>
+
+        <g id="asientos-norte" style="display: none;">
+            <circle class="asiento libre" cx="450" cy="150" r="10" onclick="comprar('Norte, F1-A1')"></circle>
+            <circle class="asiento ocupado" cx="480" cy="150" r="10"></circle>
+            <circle class="asiento libre" cx="510" cy="150" r="10" onclick="comprar('Norte, F1-A3')"></circle>
+            <circle class="asiento libre" cx="540" cy="150" r="10" onclick="comprar('Norte, F1-A4')"></circle>
+
+            <circle class="asiento ocupado" cx="435" cy="180" r="10"></circle>
+            <circle class="asiento libre" cx="465" cy="180" r="10" onclick="comprar('Norte, F2-A2')"></circle>
+            <circle class="asiento libre" cx="495" cy="180" r="10" onclick="comprar('Norte, F2-A3')"></circle>
+            <circle class="asiento libre" cx="525" cy="180" r="10" onclick="comprar('Norte, F2-A4')"></circle>
+            <circle class="asiento ocupado" cx="555" cy="180" r="10"></circle>
+        </g>
+
+        <g id="asientos-pista" style="display: none;">
+            <circle class="asiento libre" cx="400" cy="500" r="15" onclick="comprar('Pista, S1')"></circle>
+            <circle class="asiento libre" cx="440" cy="500" r="15" onclick="comprar('Pista, S2')"></circle>
+            <circle class="asiento libre" cx="480" cy="500" r="15" onclick="comprar('Pista, S3')"></circle>
+            <circle class="asiento ocupado" cx="520" cy="500" r="15"></circle>
+            <circle class="asiento libre" cx="560" cy="500" r="15" onclick="comprar('Pista, S5')"></circle>
+            <circle class="asiento ocupado" cx="600" cy="500" r="15"></circle>
+        </g>
+
+    </svg>
+</div>
+
+<script>
+    const mapaSvg = document.getElementById('mapa-svg');
+    const capaZonas = document.getElementById('capa-zonas');
+    const btnVolver = document.getElementById('btn-volver');
+    const VIEWBOX_GLOBAL = "0 0 1000 1000";
+
+    // Función que simula lo que haría Angular al hacer click en una Zona
+    function entrarEnZona(nuevoViewBox, idCapaAsientos) {
+        // 1. Cambiamos la "cámara" (hace el zoom automático)
+        mapaSvg.setAttribute('viewBox', nuevoViewBox);
+
+        // 2. Ocultamos la vista de zonas general
+        capaZonas.style.display = 'none';
+
+        // 3. Mostramos solo los asientos de la zona clickeada
+        document.getElementById(idCapaAsientos).style.display = 'block';
+
+        // 4. Mostramos el botón de volver
+        btnVolver.style.display = 'block';
+        document.querySelector('h2').innerText = "Selecciona tu asiento";
+    }
+
+    // Función para resetear la vista
+    function volverAlMapaGeneral() {
+        // 1. Restauramos la cámara global
+        mapaSvg.setAttribute('viewBox', VIEWBOX_GLOBAL);
+
+        // 2. Mostramos las zonas de nuevo
+        capaZonas.style.display = 'block';
+
+        // 3. Ocultamos todos los grupos de asientos
+        document.getElementById('asientos-norte').style.display = 'none';
+        document.getElementById('asientos-pista').style.display = 'none';
+
+        // 4. Ocultamos el botón
+        btnVolver.style.display = 'none';
+        document.querySelector('h2').innerText = "Selecciona tu zona";
+    }
+
+    // Simula la acción de comprar
+    function comprar(asientoInfo) {
+        alert("Has seleccionado el asiento: " + asientoInfo + ". \n¡En Angular aquí abrirías la pasarela de pago o el carrito!");
+    }
+</script>
+</body>
+</html>

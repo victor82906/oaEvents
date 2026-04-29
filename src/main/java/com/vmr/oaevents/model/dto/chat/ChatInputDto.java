@@ -16,7 +16,6 @@ public class ChatInputDto {
 
     private LocalDateTime fecha;
 
-    @NotNull(message = "Id del emisor obligatorio")
     private Long emisor_id;
 
     @NotNull(message = "Id del receptor obligatorio")
