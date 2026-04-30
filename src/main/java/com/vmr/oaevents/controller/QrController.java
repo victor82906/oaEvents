@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,9 +47,9 @@ public class QrController {
     }
 
     @PostMapping("/check")
-    public ResponseEntity<String> checkQr(@Valid @RequestBody CheckQrDto checkQrDto) {
+    public ResponseEntity<Map<String, String>> checkQr(@Valid @RequestBody CheckQrDto checkQrDto) {
         service.checkQr(checkQrDto);
-        return ResponseEntity.ok("El QR es válido y ha sido registrado con éxito.");
+        return ResponseEntity.ok(Map.of("mensaje", "El QR es válido y ha sido registrado con éxito."));
     }
 
     @PutMapping("/{id}")
