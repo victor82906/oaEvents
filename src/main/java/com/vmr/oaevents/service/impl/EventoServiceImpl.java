@@ -72,6 +72,11 @@ public class EventoServiceImpl implements EventoService {
     }
 
     @Override
+    public Page<Evento> findByCompradorIdAndTitulo(Long compradorId, String titulo, Pageable pageable) {
+        return repository.findEventosByCompradorIdAndTitulo(compradorId, titulo, pageable);
+    }
+
+    @Override
     public Page<Evento> findByRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable) {
         if (fechaInicio.isAfter(fechaFin)) {
             throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha fin");

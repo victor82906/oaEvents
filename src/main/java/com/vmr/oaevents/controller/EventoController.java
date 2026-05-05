@@ -98,6 +98,16 @@ public class EventoController {
         return ResponseEntity.ok(page.map(mapper::toDto));
     }
 
+    @GetMapping("/comprador/{compradorId}/buscar/titulo/page")
+    @PreAuthorize("hasRole('RECINTO') or principal.id == #compradorId")
+    public ResponseEntity<Page<EventoOutputDto>> findByCompradorIdAndTitulo(
+            @PathVariable Long compradorId,
+            @RequestParam String titulo,
+            Pageable pageable) {
+        Page<Evento> page = service.findByCompradorIdAndTitulo(compradorId, titulo, pageable);
+        return ResponseEntity.ok(page.map(mapper::toDto));
+    }
+
     @GetMapping("/buscar/fechas/page")
     @PreAuthorize("hasRole('RECINTO')")
     public ResponseEntity<Page<EventoOutputDto>> findByFechas(

@@ -16,6 +16,7 @@ public interface EventoService {
     Page<Evento> findByEmpresaIdAndAceptado(Long empresaId, boolean aceptado, Pageable pageable);
     Page<Evento> findByTitulo(String titulo, Pageable pageable);
     Page<Evento> findByEmpresaIdAndTitulo(Long empresaId, String titulo, Pageable pageable);
+    Page<Evento> findByCompradorIdAndTitulo(Long compradorId, String titulo, Pageable pageable);
     Page<Evento> findByRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable);
     Page<Evento> findAceptadosByRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable);
     Evento findById(Long id);
