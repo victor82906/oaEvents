@@ -143,7 +143,7 @@ public class EntradaServiceImpl implements EntradaService {
             datos.put("puerta", "N/A");
         }
 
-        datos.put("pista", true);
+        datos.put("pista", pista);
 
         if (!pista && !Objects.isNull(entrada.getLocalidad())) {
             datos.put("fila", entrada.getLocalidad().getFila());
